@@ -3,8 +3,11 @@
 
 namespace App\Data\Repositories\Property;
 
+
+
 use App\Data\Models\Property\PropertyModel;
 
+use App\Data\Repositories\BaseRepository;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use DateTime;
@@ -14,7 +17,7 @@ use DateTime;
  *
  * @package App\Data\Repositories\Users
  */
-class PropertyRepository 
+class PropertyRepository extends BaseRepository
 {
     /**
      * Declaration of Variables
@@ -95,6 +98,14 @@ class PropertyRepository
         return $pass; 
     }
 
+    /**
+     * Update Product
+     *
+     * @param   int    $id    Product ID
+     * @param   array  $data  data info
+     *
+     * @return  boolean        true
+     */
     public function update(int $id, array $data)
     {
         if(!isset($data['sku'])){
@@ -126,6 +137,13 @@ class PropertyRepository
         return true;
     }
 
+    /**
+     * Delete Product
+     *
+     * @param   int  $id  product id
+     *
+     * @return  boolean    true
+     */
     public function delete(int $id)
     {
         $prods = $this->property_model->find($id);
@@ -143,6 +161,58 @@ class PropertyRepository
 
         return true;
     }
+
+    /**
+     * Get All Product List
+     * 
+     * @return  array       producs
+     */
+    public function all()
+    {
+        $product_info = $this->returnToArray(PropertyModel::get());
+        if(empty($product_info)){
+            return [];
+        }
+        return $product_info;
+    }
+
+    /**
+     * Single Product
+     *
+     * @param   int  $id  product id
+     *
+     * @return  array       producs
+     */
+    public function single($id)
+    {
+        $product_info = $this->returnToArray(PropertyModel::where('id', $id)->get());
+        if(empty($product_info)){
+            return [];
+        }
+        return $product_info;
+    }
+
+    /**
+     * Get Details With Meta
+     *
+     * @param   array  $data  data with meta info
+     *
+     * @return  return         full Property Data
+     */
+    public function getDetailsWithMeta($data)
+    {
+        $full_information = [];
+        foreach ($data as $key => $value) {
+            $full_data = $this->returnToArray(PropertyModel::where('id', '=', $value['id'])->first());
+            if(!empty($full_data)){
+                $full_data['meta'] = $value['meta'];
+                array_push($full_information, $full_data);
+            }
+        }
+        
+        return $full_information;
+    }
+    
 
     
 }

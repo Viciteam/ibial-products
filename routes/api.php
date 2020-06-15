@@ -26,5 +26,14 @@ Route::group([
     Route::post("add", 'PropertyController@create');
     Route::post("edit", 'PropertyController@edit');
     Route::post("delete/{id}", 'PropertyController@delete');
+    
+    Route::get("meta", 'PropertyController@meta');
+
+    Route::get("/", 'PropertyController@all');
+    Route::get("{id}", 'PropertyController@single');
+
+
 });
+
+
 
