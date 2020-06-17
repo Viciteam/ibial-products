@@ -169,7 +169,7 @@ class PropertyRepository extends BaseRepository
      */
     public function all()
     {
-        $product_info = $this->returnToArray(PropertyModel::get());
+        $product_info = $this->returnToArray($this->property_model->get());
         if(empty($product_info)){
             return [];
         }
@@ -185,7 +185,7 @@ class PropertyRepository extends BaseRepository
      */
     public function single($id)
     {
-        $product_info = $this->returnToArray(PropertyModel::where('id', $id)->get());
+        $product_info = $this->returnToArray($this->property_model->where('id', $id)->get());
         if(empty($product_info)){
             return [];
         }
@@ -203,7 +203,7 @@ class PropertyRepository extends BaseRepository
     {
         $full_information = [];
         foreach ($data as $key => $value) {
-            $full_data = $this->returnToArray(PropertyModel::where('id', '=', $value['id'])->first());
+            $full_data = $this->returnToArray($this->property_model->where('id', '=', $value['id'])->first());
             if(!empty($full_data)){
                 $full_data['meta'] = $value['meta'];
                 array_push($full_information, $full_data);

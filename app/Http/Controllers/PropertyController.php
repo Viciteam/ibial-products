@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Services\Property\CreatePropertyService;
 use App\Http\Services\Property\EditPropertyService;
 use App\Http\Services\Property\DeletePropertyService;
-use App\Http\Services\Property\GetPropertyDetails;
+use App\Http\Services\Property\GetPropertyDetailsService;
 
 class PropertyController extends Controller
 {
@@ -50,7 +50,7 @@ class PropertyController extends Controller
      * Get all Products
      */
     public function all(
-        GetPropertyDetails $getDetails
+        GetPropertyDetailsService $getDetails
     )
     {
         $data = [];
@@ -61,7 +61,7 @@ class PropertyController extends Controller
      * Get single product
      */
     public function single(
-        GetPropertyDetails $getDetails,
+        GetPropertyDetailsService $getDetails,
         $id
     )
     {
@@ -75,7 +75,7 @@ class PropertyController extends Controller
      */
     public function meta(
         Request $request,
-        GetPropertyDetails $getDetails
+        GetPropertyDetailsService $getDetails
     )
     {
         $data = $request->all();

@@ -6,7 +6,7 @@ use App\Data\Repositories\Property\PropertyRepository;
 use App\Data\Repositories\Property\PropertyMetaRepository;
 use App\Http\Services\BaseService;
 
-class GetPropertyDetails extends BaseService
+class GetPropertyDetailsService extends BaseService
 {   
     private $propertyRepo;
     private $propertyMeta;
@@ -43,7 +43,6 @@ class GetPropertyDetails extends BaseService
             }
         } elseif(isset($data['meta'])){
             $list_of_product_ids = $this->property_meta->getMetaWithValue($data);
-            // dump($list_of_product_ids);
             if(!empty($list_of_product_ids)){
                 $property_details = $this->property->getDetailsWithMeta($list_of_product_ids);
                 return $this->absorb([

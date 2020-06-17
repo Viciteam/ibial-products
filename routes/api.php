@@ -31,9 +31,15 @@ Route::group([
 
     Route::get("/", 'PropertyController@all');
     Route::get("{id}", 'PropertyController@single');
-
-
 });
 
+
+Route::group([
+    'prefix' => 'package',
+], function () {
+    Route::post("add", 'PackageController@create');
+
+    Route::get("{product_id}", 'PackageController@info');
+});
 
 
