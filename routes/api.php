@@ -23,7 +23,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group([
     'prefix' => 'products',
 ], function () {
-    Route::post("add", 'PropertyController@create');
+Route::post("add", 'PropertyController@create');
     Route::post("edit", 'PropertyController@edit');
     Route::post("delete/{id}", 'PropertyController@delete');
     
@@ -38,8 +38,14 @@ Route::group([
     'prefix' => 'package',
 ], function () {
     Route::post("add", 'PackageController@create');
+    Route::post("edit", 'PackageController@edit');
 
     Route::get("{product_id}", 'PackageController@info');
 });
 
 
+Route::group([
+    'prefix' => 'transaction',
+], function () {
+    Route::post("/", 'TransactionController@purchase');
+});

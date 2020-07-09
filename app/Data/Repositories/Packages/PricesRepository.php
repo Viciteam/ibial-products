@@ -73,6 +73,28 @@ class PricesRepository extends BaseRepository
         }
         return $with_prices;
     }
+
+    public function update($id, $data)
+    {
+        $properties = $this->price->where('package_id', '=', $id)->delete();
+
+        foreach ($data as $key => $value) {
+            $value['package_id'] = $id;
+            $prices = $this->price->init($value);
+
+            if (!$prices->validate($value)) {
+                $errors = $prices->getErrors();
+                continue;
+            }
+    
+            if (!$prices->save()) {
+                $errors = $prices->getErrors();
+                continue;
+            }
+        }
+
+        return $this->returnToArray($this->price->where("package_id", "=", $id)->get());
+    }
     
     
 }

@@ -60,6 +60,28 @@ class ExtraOrderRepository extends BaseRepository
         }
         return $with_extra;
     }
+
+    public function update($id, $data)
+    {
+        $properties = $this->extra_order->where('package_id', '=', $id)->delete();
+
+        foreach ($data as $key => $value) {
+            $value['package_id'] = $id;
+            $extra_order = $this->extra_order->init($value);
+            
+            if (!$extra_order->validate($value)) {
+                $errors = $extra_order->getErrors();
+                continue;
+            }
+    
+            if (!$extra_order->save()) {
+                $errors = $extra_order->getErrors();
+                continue;
+            }
+        }
+
+        return $this->returnToArray($this->extra_order->where("package_id", "=", $id)->get());
+    }
     
     
 }

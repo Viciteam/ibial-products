@@ -101,5 +101,29 @@ class PackagesRepository extends BaseRepository
         return $package;
     }
     
+    public function update($data)
+    {
+        $id = $data['package_id'];
+        $prods = $this->package->find($id);
+
+        if (!$prods) {
+            return false;
+        }
+
+        if (isset($data['package_id'])) {
+            unset($data['package_id']);
+        }
+
+        $prods->fill($data);
+
+        //region Data insertion
+        if (!$prods->save()) {
+            $errors = $prods->getErrors();
+            return false;
+        }
+        // dd($prods->id);
+        
+        return $this->returnToArray($this->package->where("id", "=", $id)->first());
+    }
     
 }

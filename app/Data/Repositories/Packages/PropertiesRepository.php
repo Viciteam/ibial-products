@@ -77,6 +77,32 @@ class PropertiesRepository extends BaseRepository
         }
         return $with_properties;
     }
+
+    public function update($id, $data)
+    {
+        $properties = $this->properties->where('package_id', '=', $id)->delete();
+
+        foreach ($data as $key => $value) {
+            $init_details = [];
+            $init_details['package_id'] = $id;
+            $init_details['properties_name'] = $key;
+            $init_details['properties_value'] = $value;
+
+            $properties = $this->properties->init($init_details);
+
+            if (!$properties->validate($init_details)) {
+                $errors = $properties->getErrors();
+                continue;
+            }
+    
+            if (!$properties->save()) {
+                $errors = $properties->getErrors();
+                continue;
+            }
+        }
+
+        return $this->returnToArray($this->properties->where("package_id", "=", $id)->get());
+    }
     
     
 }

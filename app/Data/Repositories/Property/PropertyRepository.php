@@ -53,25 +53,13 @@ class PropertyRepository extends BaseRepository
        
         if (!$prods->validate($info)) {
             $errors = $prods->getErrors();
-            return [
-                'status' => 500,
-                'message' => 'An error has occurred while validating the Product.',
-                'meta' => [
-                    'errors' => $errors,
-                ],
-            ];
+            return '';
         }
 
         //region Data insertion
         if (!$prods->save()) {
             $errors = $prods->getErrors();
-            return [
-                'status' => 500,
-                'message' => 'An error has occurred while saving the Product.',
-                'meta' => [
-                    'errors' => $errors,
-                ],
-            ];
+            return '';
         }
         // dd($prods->id);
         
