@@ -48,6 +48,10 @@ Route::group([
     'prefix' => 'transaction',
 ], function () {
     Route::post("/", 'TransactionController@purchase');
+    Route::post("/cart", 'TransactionController@addcart');
+
+    Route::get("/cart", 'TransactionController@getcart');
+
 });
 
 Route::group([

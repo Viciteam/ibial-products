@@ -8,6 +8,7 @@ namespace App\Data\Repositories\Transactions;
 use App\Data\Models\Transaction\TransactionModel;
 
 use App\Data\Repositories\BaseRepository;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use DateTime;
@@ -71,8 +72,39 @@ class TransactionRepository extends BaseRepository
         ];
     }
 
+    public function AddTocart($data)
+    {
+        $cart = Redis::get('cart:'.$data['user_id']);
+        $cart = json_decode($cart);
 
-    
+        // if no current log, make a new log
+        if($cart === NULL){
+            $cart = [];
+        }
+        
+        $product_exist = $this->inArray($data['product_id'], $cart);
+        if(!$product_exist){
+            array_push($cart, $data['product_id']);
+        }
+
+        Redis::set('cart:'.$data['user_id'], json_encode($cart));
+
+        return true;
+    }
+
+    public function Getcart($data)
+    {
+        $cart = Redis::get('cart:'.$data['user_id']);
+        $cart = json_decode($cart);
+
+        // if no current log, make a new log
+        if($cart === NULL){
+            $cart = [];
+        }
+
+        return $cart;
+
+    }
     
 
     

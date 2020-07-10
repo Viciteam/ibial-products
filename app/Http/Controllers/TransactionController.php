@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Services\Transactions\PurchaseService;
+use App\Http\Services\Transactions\AddCartService;
+use App\Http\Services\Transactions\GetCartService;
 
 
 class TransactionController extends Controller
@@ -21,7 +23,23 @@ class TransactionController extends Controller
         return $purchase->handle($data);
     }
 
+    public function addcart(
+        Request $request,
+        AddCartService $cart
+    )
+    {
+        $data = $request->all();
+        return $cart->handle($data);
+    }
 
+    public function getcart(
+        Request $request,
+        GetCartService $cart
+    )
+    {
+        $data = $request->all();
+        return $cart->handle($data);
+    }
 
 
 }

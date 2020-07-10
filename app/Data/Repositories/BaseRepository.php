@@ -19,4 +19,16 @@ abstract class BaseRepository
         }
     }
 
+    public function inArray($needle, $haystack)
+    {
+        foreach ($haystack as $key => $value) {
+            if($value == $needle){
+                return true;
+                break;
+            }
+        }
+
+        return false;
+    }
+
 }
