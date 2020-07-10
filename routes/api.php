@@ -56,3 +56,5 @@ Route::group([
     Route::post("/", 'LogController@insert');
     Route::get("/", 'LogController@get'); 
 });
+
+
