@@ -49,3 +49,10 @@ Route::group([
 ], function () {
     Route::post("/", 'TransactionController@purchase');
 });
+
+Route::group([
+    'prefix' => 'log',
+], function () {
+    Route::post("/", 'LogController@insert');
+    Route::get("/", 'LogController@get');
+});
