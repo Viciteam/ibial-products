@@ -54,5 +54,5 @@ Route::group([
     'prefix' => 'log',
 ], function () {
     Route::post("/", 'LogController@insert');
-    Route::get("/", 'LogController@get');
+    Route::get("/", 'LogController@get'); 
 });
