@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Services\Transactions\PurchaseService;
 use App\Http\Services\Transactions\AddCartService;
 use App\Http\Services\Transactions\GetCartService;
+use App\Http\Services\Transactions\CheckoutService;
 
 
 class TransactionController extends Controller
@@ -39,6 +40,15 @@ class TransactionController extends Controller
     {
         $data = $request->all();
         return $cart->handle($data);
+    }
+
+    public function checkout(
+        Request $request,
+        CheckoutService $checkout
+    )
+    {
+        $data = $request->all();
+        return $checkout->handle($data);
     }
 
 

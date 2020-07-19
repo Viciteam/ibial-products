@@ -136,6 +136,34 @@ class PropertyMetaRepository extends BaseRepository
         }
         return $final_return;
     }
+
+    public function get_only_meta($data)
+    {
+        $rebuild_meta = [];
+        foreach($data as $key => $value) {
+            $meta_information = $this->returnToArray(PropertyMetaModel::where("productid", $value['id'])->get());
+            
+            $meta_info_cats = [];
+            foreach ($meta_information as $mikey => $mivalue) {
+                array_push($meta_info_cats, $mivalue['metakey']);
+            }
+
+            // unique keys
+            $meta_info_cats = array_unique($meta_info_cats);
+
+            // rebuild response
+            foreach ($meta_info_cats as $fnkey => $fnvalue) {
+                $rebuild_meta[$fnvalue] = [];
+                foreach($meta_information as $fnikey => $fnivalue){
+                    if($fnivalue['metakey'] == $fnvalue){
+                        array_push($rebuild_meta[$fnvalue], $fnivalue['metavalue']);
+                    }
+                }
+            }
+            
+        }
+        return $rebuild_meta;
+    }
     
     /**
      * Get Product ID's as per Meta
@@ -186,6 +214,38 @@ class PropertyMetaRepository extends BaseRepository
         }
 
         return $product_metas;
+    }
+
+    public function related($data)
+    {
+        $related_products = [];
+        if(!empty($data)){
+
+            $arranged_meta = [];
+            // rearrange meta as per key ang get value
+            foreach ($data as $key => $value) {
+                foreach ($value as $metakey => $metavalue) {
+                    if(!array_key_exists($metakey, $arranged_meta)){
+                        $arranged_meta[$metakey] = [];
+                    }
+                    foreach ($metavalue as $mtkey => $mtvalue) {
+                        array_push($arranged_meta[$metakey], $mtvalue);
+                    }
+                }
+            }
+
+            $meta_products = [];
+            foreach ($arranged_meta as $amkey => $amvalue) {
+                foreach ($amvalue as $amvkey => $amvvalue) {
+                    $meta = $this->returnToArray($this->property_meta_model->where([["metakey", "=", $amkey],["metavalue", "like", "%".$amvvalue."%"]])->get());
+                    foreach ($meta as $mtkey => $mtvalue) {
+                        array_push($meta_products, $mtvalue['productid']);
+                    }
+                }
+            }
+            
+           return $meta_products;
+        }
     }
     
 }

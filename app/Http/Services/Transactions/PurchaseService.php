@@ -23,9 +23,23 @@ class PurchaseService extends BaseService
      */
     public function handle($data)
     {   
-        $transaction = $this->transaction->create($data);
+        if(!empty($data)){
+            foreach ($data as $key => $value) {
+                $transaction = $this->transaction->create($value);
+            }
+            return $this->absorb([
+                'status' => 200,
+                'message' => 'Success Inserted Transactions'
+            ]);
+        } else {
+            return $this->absorb([
+                'status' => 500,
+                'message' => 'Enpty Transactions'
+            ]);
+        }
+        
 
-        return $this->absorb($transaction);
+        
         
     }
 

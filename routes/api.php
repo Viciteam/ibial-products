@@ -61,4 +61,16 @@ Route::group([
     Route::get("/", 'LogController@get'); 
 });
 
+Route::group([
+    'prefix' => 'suggested',
+], function () {
+    Route::get("/", 'LogController@suggested'); 
+});
+
+Route::group([
+    'prefix' => 'checkout',
+], function () {
+    Route::post("/", 'TransactionController@checkout'); 
+});
+
 

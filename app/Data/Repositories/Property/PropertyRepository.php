@@ -201,6 +201,49 @@ class PropertyRepository extends BaseRepository
         return $full_information;
     }
     
+    public function related($data)
+    {
+        $related_products = [];
+
+        if(!empty($data)){
+            $related_based = [];
+            
+            // get reference info
+            foreach ($data as $refkey => $refvalue) {
+                
+                $prod_name = explode(" ", strtolower(trim($refvalue['name'])));
+                $prod_desc = explode(" ", strtolower(trim($refvalue['description'])));
+                $prod_info = array_merge($prod_name, $prod_desc);
+                
+                array_merge($prod_info, $related_based);
+                foreach ($prod_info as $pikey => $pivalue) {
+                    if(!in_array($pivalue, $this->RelatedParams())){
+                        array_push($related_based, $pivalue);
+                    }
+                    
+                }
+            }
+
+            // get products that will match name and description
+            foreach ($related_based as $rfkey => $rfvalue) {
+                $dproduct = $this->returnToArray($this->property_model->where('name', 'like', '%'.$rfvalue.'%')->orWhere('description', 'like', '%'.$rfvalue.'%')->get());
+                
+                foreach ($dproduct as $dpkey => $dpvalue) {
+                    array_push($related_products, $dpvalue['id']);
+                }
+            }
+            
+        }
+
+        return $related_products;
+        
+    }
+
+    public function RelatedParams()
+    {
+        $filters = ["this", "is", "the", "of", "for", "name", "product", "are"];
+        return $filters;
+    }
 
     
 }

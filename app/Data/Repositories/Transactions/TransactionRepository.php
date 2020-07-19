@@ -106,6 +106,10 @@ class TransactionRepository extends BaseRepository
 
     }
     
-
+    public function get()
+    {
+        $info = $this->returnToArray($this->transaction->get());
+        return $info;
+    }
     
 }
