@@ -74,3 +74,23 @@ Route::group([
 });
 
 
+Route::group([
+    'prefix' => 'company',
+], function () {
+    Route::post("add", 'CompanyController@insert'); 
+});
+
+Route::group([
+    'prefix' => 'teams',
+], function () {
+    Route::post("add", 'CompanyController@addTeam'); 
+});
+
+
+Route::group([
+    'prefix' => 'kb',
+], function () {
+    Route::post("insert", 'KnowledgeBaseController@insert'); 
+    Route::post("edit", 'KnowledgeBaseController@edit'); 
+    Route::post("deactive", 'KnowledgeBaseController@deactive'); 
+});

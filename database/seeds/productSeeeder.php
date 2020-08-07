@@ -50,6 +50,7 @@ class productSeeeder extends Seeder
             "Parenting",
             "Weddings",
         ];
+
         $features = [
             "Touch Screen Ready",
             "Integrated Customer Rewards Program",
@@ -94,6 +95,7 @@ class productSeeeder extends Seeder
             "Print Liquor Shelf Labels with Bar Codes",
             "Online Liquor Ordering by Scanning",
         ];
+
         $interest = [
             "Advertising",
             "Agriculture",
@@ -106,6 +108,8 @@ class productSeeeder extends Seeder
             "Economics",
             "Engineering",
         ];
+
+        
 
         $limit = 5;
 
