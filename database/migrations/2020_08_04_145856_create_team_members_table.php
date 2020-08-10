@@ -18,6 +18,10 @@ class CreateTeamMembersTable extends Migration
             $table->string('user_id');
             $table->string('team_id');
             $table->string('position');
+            $table->string('invitee');
+            $table->string('status');
+            $table->string('role')->default('member');
+            $table->string('permission')->default('observer');
             $table->timestamps();
         });
     }
@@ -29,6 +33,6 @@ class CreateTeamMembersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('team');
+        Schema::dropIfExists('team_members');
     }
 }

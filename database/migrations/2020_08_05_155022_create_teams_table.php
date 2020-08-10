@@ -19,6 +19,7 @@ class CreateTeamsTable extends Migration
             $table->string('name');
             $table->longText('description')->nullable();
             $table->longText('created_by');
+            $table->longText('attributes')->nullable();
             $table->timestamps();
         });
     }

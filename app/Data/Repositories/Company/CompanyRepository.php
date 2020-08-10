@@ -6,6 +6,7 @@ namespace App\Data\Repositories\Company;
 use App\Data\Models\Company\BusinessModel;
 use App\Data\Models\Company\HashtagModel;
 use App\Data\Models\Company\TeamModel;
+use App\Data\Models\Company\TeamMembersModel;
 
 use App\Data\Repositories\BaseRepository;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +26,7 @@ class CompanyRepository extends BaseRepository
     private $business_model;
     private $hashtag_model;
     private $team_model;
+    private $team_member_model;
 
     /**
      * PropertyRepository constructor.
@@ -33,11 +35,13 @@ class CompanyRepository extends BaseRepository
     public function __construct(
         BusinessModel $businessModel,
         HashtagModel $hashtagModel,
-        TeamModel $teamModel
+        TeamModel $teamModel,
+        TeamMembersModel $teamMemberModel
     ){
         $this->business_model = $businessModel;
         $this->hashtag_model = $hashtagModel;
         $this->team_model = $teamModel;
+        $this->team_member_model = $teamMemberModel;
     }
 
     public function add($data)
@@ -97,6 +101,7 @@ class CompanyRepository extends BaseRepository
     public function addTeamDetails($data)
     {
         // dump($data);
+        $data['attributes'] = (isset($data['attributes']) ? json_encode($data['attributes']) : json_encode([]));
 
         $prods = $this->team_model->init($data);
 
@@ -115,6 +120,44 @@ class CompanyRepository extends BaseRepository
         
         return $prods->id;
     }
+
+    public function insertInvitation($data)
+    {
+        $prods = $this->team_member_model->init($data);
+
+        if (!$prods->validate($data)) {
+            $errors = $prods->getErrors();
+            // dump($errors);
+            // return 'error on validate';
+        }
+
+        // region Data insertion
+        if (!$prods->save()) {
+            $errors = $prods->getErrors();
+            // dump($errors);
+            // return 'error on saving';
+        }
+
+        $data['id'] = $prods->id;
+        
+        return $data;
+    }
+
+    public function changeRole($data)
+    {
+        $this->team_member_model->where("id", "=", $data['member_id'])->update([
+            "role" => $data['change_to']
+        ]);
+    }
+
+    public function changePermissions($data)
+    {
+        $this->team_member_model->where("id", "=", $data['member_id'])->update([
+            "permission" => $data['change_to']
+        ]);
+    }
+
+
     
     
 }

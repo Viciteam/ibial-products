@@ -84,6 +84,7 @@ Route::group([
     'prefix' => 'teams',
 ], function () {
     Route::post("add", 'CompanyController@addTeam'); 
+    Route::post("invite", 'CompanyController@invite'); 
 });
 
 
@@ -93,4 +94,10 @@ Route::group([
     Route::post("insert", 'KnowledgeBaseController@insert'); 
     Route::post("edit", 'KnowledgeBaseController@edit'); 
     Route::post("deactive", 'KnowledgeBaseController@deactive'); 
+});
+
+Route::group([
+    'prefix' => 'manage',
+], function () {
+    Route::post("/", 'CompanyController@manage'); 
 });
