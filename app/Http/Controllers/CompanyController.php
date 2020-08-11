@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 
 use App\Http\Services\Company\AddCompanyService;
 use App\Http\Services\Company\InviteToTeamService;
+use App\Http\Services\Company\UnInviteToTeamService;
 use App\Http\Services\Company\AddTeamInfoService;
 use App\Http\Services\Company\ManageService;
+use App\Http\Services\Company\MembersService;
 
 
 class CompanyController extends Controller
@@ -42,6 +44,15 @@ class CompanyController extends Controller
         return $invite->handle($data);
     }
 
+    public function uninvite(
+        Request $request,
+        UnInviteToTeamService $uninvite
+    )
+    {
+        $data = $request->all();
+        return $uninvite->handle($data);
+    }
+
     public function manage(
         Request $request,
         ManageService $manage
@@ -51,5 +62,13 @@ class CompanyController extends Controller
         return $manage->handle($data);
     }
 
-
+    // getter
+    public function members(
+        Request $request,
+        MembersService $members
+    )
+    {
+        $data = $request->all();
+        return $members->handle($data);
+    }
 }

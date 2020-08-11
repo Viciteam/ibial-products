@@ -85,6 +85,9 @@ Route::group([
 ], function () {
     Route::post("add", 'CompanyController@addTeam'); 
     Route::post("invite", 'CompanyController@invite'); 
+    Route::post("uninvite", 'CompanyController@uninvite'); 
+
+    Route::get("members", 'CompanyController@members'); 
 });
 
 

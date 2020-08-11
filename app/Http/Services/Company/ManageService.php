@@ -23,9 +23,6 @@ class ManageService extends BaseService
      */
     public function handle(array $data)
     {   
-        // initiate 
-        dump($data);
-
         // change roles
         if(isset($data['roles'])){
             foreach ($data['roles'] as $rolekey => $rolevalue) {
@@ -39,6 +36,12 @@ class ManageService extends BaseService
                 $this->company->changePermissions($rolevalue);
             }
         }
+
+        return $this->absorb([
+            'status' => 200,
+            'message' => 'Roles and Permissions Updated',
+            'data' => $feedback,
+        ]);
         
     }
 

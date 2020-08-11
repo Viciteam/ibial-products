@@ -157,7 +157,15 @@ class CompanyRepository extends BaseRepository
         ]);
     }
 
+    public function getMembers($data)
+    {
+       return $this->returnToArray($this->team_member_model->where($data)->get()); 
+    }
 
+    public function unInvite($data)
+    {
+        $this->team_member_model->where("id", "=", $data)->delete();
+    }
     
     
 }
