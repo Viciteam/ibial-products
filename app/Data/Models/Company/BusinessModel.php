@@ -22,6 +22,7 @@ class BusinessModel extends BaseModel
         'location',
         'skills',
         'language',
+        'attributes',
         'created_by',
     ];
 
@@ -34,6 +35,7 @@ class BusinessModel extends BaseModel
         'location' => 'sometimes|required',
         'skills' => 'sometimes|required',
         'language' => 'sometimes|required',
+        'attributes' => 'sometimes|required',
     ];
 
      public function transactions()

@@ -31,4 +31,24 @@ abstract class BaseRepository
         return false;
     }
 
+    public function insertData($data, $model)
+    {
+        $prods = $this->business_model->init($data);
+
+        if (!$prods->validate($data)) {
+            $errors = $prods->getErrors();
+            // dump($errors);
+            // return 'error on validate';
+        }
+
+        // region Data insertion
+        if (!$prods->save()) {
+            $errors = $prods->getErrors();
+            // dump($errors);
+            // return 'error on saving';
+        }
+
+        return true;
+    }
+
 }

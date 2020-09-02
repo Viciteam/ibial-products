@@ -22,6 +22,7 @@ class CreateBusinessTable extends Migration
             $table->string('location');
             $table->string('skills');
             $table->string('language');
+            $table->string('attributes')->nullable();
             $table->string('created_by');
             $table->timestamps();
         });

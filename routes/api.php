@@ -73,7 +73,6 @@ Route::group([
     Route::post("/", 'TransactionController@checkout'); 
 });
 
-
 Route::group([
     'prefix' => 'company',
 ], function () {
@@ -90,7 +89,6 @@ Route::group([
     Route::get("members", 'CompanyController@members'); 
 });
 
-
 Route::group([
     'prefix' => 'kb',
 ], function () {
@@ -103,4 +101,10 @@ Route::group([
     'prefix' => 'manage',
 ], function () {
     Route::post("/", 'CompanyController@manage'); 
+});
+
+Route::group([
+    'prefix' => 'hashtags',
+], function () {
+    Route::get("suggest", 'CompanyController@suggest');
 });

@@ -51,6 +51,8 @@ class CompanyRepository extends BaseRepository
         $data['skills'] = json_encode($data['skills']);
         $data['language'] = json_encode($data['language']);
         $data['logo'] = (isset($data['logo']) || $data['logo'] != "" ? $data['logo'] : "");
+        $attributes = (isset($data['attributes']) || $data['attributes'] != "" ? $data['attributes'] : []);
+        $data['attributes'] = json_encode($attributes);
 
         $prods = $this->business_model->init($data);
 
@@ -165,6 +167,34 @@ class CompanyRepository extends BaseRepository
     public function unInvite($data)
     {
         $this->team_member_model->where("id", "=", $data)->delete();
+    }
+
+    public function getHashtags($data)
+    {
+        if(isset($data['skills']) || isset($data['language'])){
+            $hashes = $this->getCompanyByDetails($data);
+        }
+
+
+    }
+
+    public function getCompanyByDetails($data)
+    {
+        dump($data);
+
+        $params = [];
+
+        foreach ($data['skills'] as $key => $value) {
+            dump($value);
+        }
+
+
+        // $this->business_model->
+    }
+
+    public function getCompanybyAttr($data)
+    {
+        # code...
     }
     
     
