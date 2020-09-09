@@ -50,8 +50,17 @@ Route::group([
     Route::post("/", 'TransactionController@purchase');
     Route::post("/cart", 'TransactionController@addcart');
 
-    Route::get("/cart", 'TransactionController@getcart');
+    Route::post("/gate/method", 'TransactionController@gate');
+    Route::post("/gate/transact", 'TransactionController@gatetransact');
 
+    Route::get("/cart", 'TransactionController@getcart');
+});
+
+Route::group([
+    'prefix' => 'log',
+], function () {
+    Route::post("/", 'LogController@insert');
+    Route::get("/", 'LogController@get'); 
 });
 
 Route::group([

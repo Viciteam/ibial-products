@@ -8,6 +8,8 @@ use App\Http\Services\Transactions\PurchaseService;
 use App\Http\Services\Transactions\AddCartService;
 use App\Http\Services\Transactions\GetCartService;
 use App\Http\Services\Transactions\CheckoutService;
+use App\Http\Services\Transactions\GateService;
+use App\Http\Services\Transactions\GateTransactionService;
 
 
 class TransactionController extends Controller
@@ -49,6 +51,24 @@ class TransactionController extends Controller
     {
         $data = $request->all();
         return $checkout->handle($data);
+    }
+
+    public function gate(
+        Request $request,
+        GateService $checkout
+    )
+    {
+        $data = $request->all();
+        $checkout->handle($data);
+    }
+
+    public function gatetransact(
+        Request $request,
+        GateTransactionService $checkout
+    )
+    {
+        $data = $request->all();
+        $checkout->handle($data);
     }
 
 
