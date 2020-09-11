@@ -21,12 +21,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['middleware' => 'checktoken'], function(){
-    Route::get("samplebear", function(Request $request){
-        return "middle";
-        // $header = $request->header();
-        // dump($header['authorization']);
-    });
+Route::group(['middleware' => 'checktoken'], function(){ // Custom Token Auth middleware
 
     Route::group([
         'prefix' => 'products',
