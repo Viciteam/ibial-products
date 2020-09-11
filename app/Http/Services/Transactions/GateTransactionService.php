@@ -37,9 +37,9 @@ class GateTransactionService extends BaseService
                 "value" => $data['amount']
             ],
             "reference" => $data['reference'],
-            "shopperInteraction" => "Ecommerce",
-            "recurringProcessingModel" => "Subscription",
-            "enableRecurring" => true,
+            "shopperInteraction" => "Ecommerce", // for recurring
+            "recurringProcessingModel" => "Subscription", // for recurring
+            "enableRecurring" => true, // forrecurring
             "paymentMethod" => [
                 "type" => $data['method']['type'],
                 "holderName"  => $data['method']['holderName'],
