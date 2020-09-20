@@ -21,6 +21,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::group([
+    'prefix' => 'transaction',
+], function () {
+    Route::post("/", 'TransactionController@purchase');
+    Route::post("/cart", 'TransactionController@addcart');
+
+    Route::post("/gate/method", 'TransactionController@gate');
+    Route::post("/gate/transact", 'TransactionController@gatetransact');
+
+    Route::get("/cart", 'TransactionController@getcart');
+});
+
 Route::group(['middleware' => 'checktoken'], function(){ // Custom Token Auth middleware
 
     Route::group([
@@ -47,17 +59,17 @@ Route::group(['middleware' => 'checktoken'], function(){ // Custom Token Auth mi
     });
     
     
-    Route::group([
-        'prefix' => 'transaction',
-    ], function () {
-        Route::post("/", 'TransactionController@purchase');
-        Route::post("/cart", 'TransactionController@addcart');
+    // Route::group([
+    //     'prefix' => 'transaction',
+    // ], function () {
+    //     Route::post("/", 'TransactionController@purchase');
+    //     Route::post("/cart", 'TransactionController@addcart');
     
-        Route::post("/gate/method", 'TransactionController@gate');
-        Route::post("/gate/transact", 'TransactionController@gatetransact');
+    //     Route::post("/gate/method", 'TransactionController@gate');
+    //     Route::post("/gate/transact", 'TransactionController@gatetransact');
     
-        Route::get("/cart", 'TransactionController@getcart');
-    });
+    //     Route::get("/cart", 'TransactionController@getcart');
+    // });
     
     Route::group([
         'prefix' => 'log',
@@ -122,5 +134,3 @@ Route::group(['middleware' => 'checktoken'], function(){ // Custom Token Auth mi
     });
     
 });
-
-

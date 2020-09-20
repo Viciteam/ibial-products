@@ -6,7 +6,7 @@ use App\Http\Services\BaseService;
 
 use App\Data\Repositories\Transactions\TransactionRepository;
 
-class GateTransactionService extends BaseService
+class PayTransaction extends BaseService
 {   
     private $transactionRepo;
 
@@ -23,33 +23,45 @@ class GateTransactionService extends BaseService
      */
     public function handle($data)
     {   
-        dump($data);
-        exit;
-
+        $method = $data['method']['method']; // get payments details
+        $payment = $data['method']; // get payment 
+        $transac = $data['info'];
+        
         $headers = [
             "x-API-key: AQEnhmfuXNWTK0Qc+iSZsG05q8WYS4RYA4d968y/HvlO4bTv6z6Trr/WEMFdWw2+5HzctViMSCJMYAc=-a5B7wVzumQdp+lusxexyK5/Nlws1ZDp5Z/QJcNUyQ4k=-]u](6wk(NKG;nzD~",
             "content-type: application/json"
         ];
-        $payload = json_encode([
+
+        $payload = [
             "merchantAccount" => "IBialAccountECOM", // merchant id
             "returnUrl" => "sample.com",
             "amount" => [
-                "currency" => $data['currency'],
-                "value" => $data['amount']
+                "currency" => $payment['currency'],
+                "value" => $payment['amount']
             ],
-            "reference" => $data['reference'],
-            "shopperInteraction" => "Ecommerce", // for recurring
-            "recurringProcessingModel" => "Subscription", // for recurring
-            "enableRecurring" => true, // forrecurring
+            "reference" => $payment['reference'],
             "paymentMethod" => [
-                "type" => $data['method']['type'],
-                "holderName"  => $data['method']['holderName'],
-                "encryptedCardNumber" => $data['method']['encryptedCardNumber'],
-                "encryptedExpiryMonth" => $data['method']['encryptedExpiryMonth'],
-                "encryptedExpiryYear" => $data['method']['encryptedExpiryYear'],
-                "encryptedSecurityCode" => $data['method']['encryptedSecurityCode']
+                "type" => $method['type'],
+                "holderName"  => $method['holderName'],
+                "encryptedCardNumber" => $method['encryptedCardNumber'],
+                "encryptedExpiryMonth" => $method['encryptedExpiryMonth'],
+                "encryptedExpiryYear" => $method['encryptedExpiryYear'],
+                "encryptedSecurityCode" => $method['encryptedSecurityCode']
             ],
-        ]);
+        ];
+
+        $subs_level = $data["info"]["transaction"];
+
+        if($subs_level == "subscribe"){
+            $payload["enableRecurring"] = true; // for recurring
+            $payload["shopperInteraction"] = "Ecommerce"; // for recurring
+            $payload["recurringProcessingModel"] = "Subscription"; // for recurring
+        }
+
+        $payload = json_encode($payload);
+        // dump($payload);
+        // exit;
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://checkout-test.adyen.com/v64/payments");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
@@ -63,11 +75,10 @@ class GateTransactionService extends BaseService
         curl_close($ch);
 
 
+        // $return = $output;
         $return = json_decode($output);
         
-        dump($return); 
-
-        //
+        return $return; 
         
     }
 

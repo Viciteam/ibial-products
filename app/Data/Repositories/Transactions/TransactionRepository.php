@@ -51,7 +51,7 @@ class TransactionRepository extends BaseRepository
             ];
         }
 
-        //region Data insertion
+        //region Data insertion 
         if (!$transaction->save()) {
             $errors = $transaction->getErrors();
             return [
@@ -67,7 +67,7 @@ class TransactionRepository extends BaseRepository
             'status' => 200,
             'message' => 'Successfully saved the transactions.',
             'data' => [
-                'transaction' => $transaction->ID,
+                'transaction' => $transaction->id,
             ],
         ];
     }
@@ -110,6 +110,34 @@ class TransactionRepository extends BaseRepository
     {
         $info = $this->returnToArray($this->transaction->get());
         return $info;
+    }
+
+    public function insertBilling($data, $payment, $transaction)
+    {
+
+        DB::table('billing')->insert([
+            "transaction_reference" => $payment->pspReference,
+            "transaction_id" => $transaction['data']['transaction'],
+            "scheme" => $data['subscription'],
+            "price" => $data['price'],
+            "created_at" => Carbon::now(),
+            "updated_at" => Carbon::now(),
+        ]);
+    }
+
+    public function insertBillingSchedule($data, $payment_details)
+    {
+        // dump($payment_details);
+        // dump($data);
+
+        DB::table('billing_schedule')->insert([
+            "merchant_reference" => $payment_details["reference"],
+            "next_payment" => Carbon::now()->addYear(1),
+            "scheme" => $data['subscription'],
+            "price" => $data['price'],
+            "created_at" => Carbon::now(),
+            "updated_at" => Carbon::now(),
+        ]);
     }
     
 }

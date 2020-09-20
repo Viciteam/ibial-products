@@ -17,7 +17,8 @@ class checktoken
      */
     public function handle($request, Closure $next)
     {
-        $baseUrl = env('ACCOUNTS_URL');
+        // $baseUrl = env('ACCOUNTS_URL');
+        $baseUrl = "https://accounts.ibial.com";
         
         $getToken = $request->header();
         
