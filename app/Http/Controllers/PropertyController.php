@@ -50,10 +50,12 @@ class PropertyController extends Controller
      * Get all Products
      */
     public function all(
+        Request $request,
         GetPropertyDetailsService $getDetails
     )
     {
         $data = [];
+        $data = $request->all();
         return $getDetails->handle($data);
     }
 

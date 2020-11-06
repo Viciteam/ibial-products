@@ -26,53 +26,40 @@ class GetPropertyDetailsService extends BaseService
      */
     public function handle(array $data)
     {   
-        if(isset($data['product_id'])){
-            $list_of_products = $this->property->single($data['product_id']);
-            if(!empty($list_of_products)){
-                $list_of_products = $this->property_meta->getMeta($list_of_products);
-                return $this->absorb([
-                    'status' => 200,
-                    'message' => 'Product Successfully Loaded',
-                    'data' => $list_of_products,
-                ]);
-            } else {
+        // check if limit and page
+        if(isset($data['limit']) || isset($data['page'])){
+            if((!isset($data['limit']) || $data['limit'] == "") || (!isset($data['page']) || $data['page'] == "")){
                 return $this->absorb([
                     'status' => 500,
-                    'message' => 'No Product has been loaded',
+                    'message' => 'Missing Limit or Page parameter',
+                    'data' => [],
                 ]);
             }
-        } elseif(isset($data['meta'])){
-            $list_of_product_ids = $this->property_meta->getMetaWithValue($data);
-            if(!empty($list_of_product_ids)){
-                $property_details = $this->property->getDetailsWithMeta($list_of_product_ids);
-                return $this->absorb([
-                    'status' => 200,
-                    'message' => 'Product Successfully Loaded',
-                    'data' => $property_details,
-                ]);
-            } else {
-                return $this->absorb([
-                    'status' => 500,
-                    'message' => 'No Product has been loaded',
-                ]);
-            }
-            
+        }
 
-        } else {
-            $list_of_products = $this->property->all();
-            if(!empty($list_of_products)){
-                $list_of_products = $this->property_meta->getMeta($list_of_products);
-                return $this->absorb([
-                    'status' => 200,
-                    'message' => 'Product Successfully Loaded',
-                    'data' => $list_of_products,
-                ]);
-            } else {
+        if(isset($data['product_id'])){ // get specific product
+            $list_of_products = $this->property->single($data['product_id']);
+
+            // if no product is returned
+            if(empty($list_of_products)){
                 return $this->absorb([
                     'status' => 500,
                     'message' => 'No Product has been loaded',
                 ]);
             }
+
+            $list_of_products = $this->property_meta->getMeta($list_of_products);
+            return $this->absorb([
+                'status' => 200,
+                'message' => 'Product Successfully Loaded',
+                'data' => $list_of_products,
+            ]);
+        } elseif(isset($data['meta'])){ // get product with meta
+            $list_of_product_ids = $this->property_meta->getMetaWithValue($data);
+            return $this->absorb($list_of_product_ids);
+        } else { // get all products
+            $list_of_products = $this->property->all($data);
+            return $this->absorb($list_of_products);
         }
         
     }

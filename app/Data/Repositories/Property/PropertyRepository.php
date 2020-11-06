@@ -6,6 +6,7 @@ namespace App\Data\Repositories\Property;
 
 
 use App\Data\Models\Property\PropertyModel;
+use App\Data\Models\Property\PropertyMetaModel;
 
 use App\Data\Repositories\BaseRepository;
 use Illuminate\Support\Facades\DB;
@@ -23,15 +24,18 @@ class PropertyRepository extends BaseRepository
      * Declaration of Variables
      */
     private $property_model;
+    private $property_meta_model;
 
     /**
      * PropertyRepository constructor.
      * @param Fund 
      */
     public function __construct(
-        PropertyModel $propertyModel
+        PropertyModel $propertyModel,
+        PropertyMetaModel $propertyMetaModel
     ){
         $this->property_model = $propertyModel;
+        $this->property_meta_model = $propertyMetaModel;
     }
 
     /**
@@ -155,13 +159,75 @@ class PropertyRepository extends BaseRepository
      * 
      * @return  array       producs
      */
-    public function all()
+    public function all($data)
     {
-        $product_info = $this->returnToArray($this->property_model->get());
-        if(empty($product_info)){
-            return [];
+        // init property model
+        $property_model = $this->property_model;
+        
+        if(isset($data['limit']) && isset($data['page'])){
+            // for max pagination
+            $for_pagination = $property_model->get()->count();
+
+            // get max number of pages
+            $max_pags = $for_pagination / $data['limit'];
+
+            // get skip value
+            $skip = ($data['page'] == "1" ? 0 : ($data['page'] == "2" ? $data['limit'] : $data['limit'] * ($data['page'] - 1)));
+            $property_model = $property_model->skip($skip)->take($data['limit'])->get();
+        } else {
+            $property_model = $property_model->get();
         }
-        return $product_info;
+
+        $product_info = $this->returnToArray($property_model);
+
+        if(empty($product_info)){
+            return [
+                'status' => 400,
+                'message' => 'No Product has been loaded',
+            ];
+        }
+
+        $with_meta = $this->getMeta($product_info);
+
+        return [
+            'status' => 200,
+            'message' => 'Product Successfully Loaded',
+            'meta' => [
+                'max_pages' => ceil($max_pags)
+            ],
+            'data' => $with_meta,
+        ];
+    }
+
+    public function getMeta(array $data)
+    {
+        $final_return = [];
+        foreach($data as $key => $value) {
+            $meta_information = $this->returnToArray($this->property_meta_model->where("productid", $value['id'])->get());
+            
+            // format return
+            $meta_info_cats = [];
+            foreach ($meta_information as $mikey => $mivalue) {
+                array_push($meta_info_cats, $mivalue['metakey']);
+            }
+
+            // unique keys
+            $meta_info_cats = array_unique($meta_info_cats);
+
+            // rebuild response
+            $rebuild_meta = [];
+            foreach ($meta_info_cats as $fnkey => $fnvalue) {
+                $rebuild_meta[$fnvalue] = [];
+                foreach($meta_information as $fnikey => $fnivalue){
+                    if($fnivalue['metakey'] == $fnvalue){
+                        array_push($rebuild_meta[$fnvalue], $fnivalue['metavalue']);
+                    }
+                }
+            }
+            $value['meta'] = $rebuild_meta;
+            array_push($final_return, $value);
+        }
+        return $final_return;
     }
 
     /**

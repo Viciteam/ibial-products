@@ -3,6 +3,7 @@
 
 namespace App\Data\Repositories\Property;
 
+use App\Data\Models\Property\PropertyModel;
 use App\Data\Models\Property\PropertyMetaModel;
 
 use App\Data\Repositories\BaseRepository;
@@ -20,6 +21,7 @@ class PropertyMetaRepository extends BaseRepository
     /**
      * Declaration of Variables
      */
+    private $property_model;
     private $property_meta_model;
 
     /**
@@ -27,8 +29,10 @@ class PropertyMetaRepository extends BaseRepository
      * @param Fund 
      */
     public function __construct(
+        PropertyModel $propertyModel,
         PropertyMetaModel $propertyMetaModel
     ){
+        $this->property_model = $propertyModel;
         $this->property_meta_model = $propertyMetaModel;
     }
 
@@ -173,8 +177,26 @@ class PropertyMetaRepository extends BaseRepository
      * @return  array          product meta details
      */
     public function getMetaWithValue($metas)
-    {
-        $products_info = $this->returnToArray(PropertyMetaModel::whereIn('metavalue', $metas['meta'])->get());
+    {   
+        // init meta model
+        $meta_query = $this->property_meta_model->whereIn('metavalue', $metas['meta']);
+
+        if(isset($metas['limit']) && isset($metas['page'])){
+            // for max pagination
+            $for_pagination = $meta_query->get()->count();
+
+            // get max number of pages
+            $max_pags = $for_pagination / $metas['limit'];
+
+            // get skip value
+            $skip = ($metas['page'] == "1" ? 0 : ($metas['page'] == "2" ? $metas['limit'] : $metas['limit'] * ($metas['page'] - 1)));
+            $meta_query = $meta_query->skip($skip)->take($metas['limit'])->get();
+        } else {
+            $meta_query = $meta_query->get();
+        }
+
+        $products_info = $this->returnToArray($meta_query);
+
 
         // get product Ids
         $product_ids = [];
@@ -187,7 +209,7 @@ class PropertyMetaRepository extends BaseRepository
         foreach ($product_ids as $pikey => $pivalue) {
             $meta_items = [];
             $meta_items['id'] = $pivalue;
-            $products_info = $this->returnToArray(PropertyMetaModel::where('productid', "=", $pivalue)->get());
+            $products_info = $this->returnToArray($this->property_meta_model->where('productid', "=", $pivalue)->get());
 
             // format return
             // get keys
@@ -213,8 +235,40 @@ class PropertyMetaRepository extends BaseRepository
             array_push($product_metas, $meta_items);
         }
 
-        return $product_metas;
+        if(empty($product_metas)){
+            return [
+                'status' => 400,
+                'message' => 'No Product has been loaded',
+            ];
+        }
+        
+        $product_from_meta = $this->getDetailsWithMeta($product_metas);
+
+        return [
+            'status' => 200,
+            'message' => 'Product Successfully Loaded',
+            'meta' => [
+                'max_pages' => ceil($max_pags)
+            ],
+            'data' => $product_from_meta,
+        ];
     }
+
+    public function getDetailsWithMeta($data)
+    {
+        $full_information = [];
+        foreach ($data as $key => $value) {
+            $full_data = $this->returnToArray($this->property_model->where('id', '=', $value['id'])->first());
+            if(!empty($full_data)){
+                $full_data['meta'] = $value['meta'];
+                array_push($full_information, $full_data);
+            }
+        }
+        
+        return $full_information;
+    }
+
+
 
     public function related($data)
     {
