@@ -8,6 +8,7 @@ use App\Http\Services\Property\CreatePropertyService;
 use App\Http\Services\Property\EditPropertyService;
 use App\Http\Services\Property\DeletePropertyService;
 use App\Http\Services\Property\GetPropertyDetailsService;
+use App\Http\Services\Property\GetPackagesService;
 
 class PropertyController extends Controller
 {
@@ -82,5 +83,19 @@ class PropertyController extends Controller
     {
         $data = $request->all();
         return $getDetails->handle($data);
+    }
+
+    /**
+     * Get products as per meta
+     */
+    public function packages(
+        Request $request,
+        $id,
+        GetPackagesService $getPackages
+    )
+    {
+        $data = $request->all();
+        $data['product_id'] = $id;
+        return $getPackages->handle($data);
     }
 }

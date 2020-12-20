@@ -97,7 +97,7 @@ class PackagesRepository extends BaseRepository
      */
     public function info($id)
     {
-        $package = $this->returnToArray($this->package->where("product_id", "=", $id)->get());
+        $package = $this->returnToArray($this->package->where("id", "=", $id)->get());
         return $package;
     }
     

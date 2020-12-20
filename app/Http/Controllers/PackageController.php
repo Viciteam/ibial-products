@@ -37,10 +37,10 @@ class PackageController extends Controller
      */
     public function info(
         GetPackageService $getPackages,
-        $product_id
+        $package_id
     )
     {
-        return $getPackages->handle($product_id);
+        return $getPackages->handle($package_id);
     }
 
     

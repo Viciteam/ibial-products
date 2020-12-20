@@ -33,7 +33,7 @@ Route::group([
     Route::get("/cart", 'TransactionController@getcart');
 });
 
-Route::group(['middleware' => 'checktoken'], function(){ // Custom Token Auth middleware
+// Route::group(['middleware' => 'checktoken'], function(){ // Custom Token Auth middleware
 
     Route::group([
         'prefix' => 'products',
@@ -46,6 +46,7 @@ Route::group(['middleware' => 'checktoken'], function(){ // Custom Token Auth mi
     
         Route::get("/", 'PropertyController@all');
         Route::get("{id}", 'PropertyController@single');
+        Route::get("{id}/packages", 'PropertyController@packages');
     });
     
     
@@ -55,7 +56,8 @@ Route::group(['middleware' => 'checktoken'], function(){ // Custom Token Auth mi
         Route::post("add", 'PackageController@create');
         Route::post("edit", 'PackageController@edit');
     
-        Route::get("{product_id}", 'PackageController@info');
+        Route::get("{package_id}", 'PackageController@info');
+        // Route::get("{package_id}", 'PackageController@info');
     });
     
     
@@ -133,4 +135,4 @@ Route::group(['middleware' => 'checktoken'], function(){ // Custom Token Auth mi
         Route::get("suggest", 'CompanyController@suggest');
     });
     
-});
+// });

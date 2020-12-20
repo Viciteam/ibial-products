@@ -5,6 +5,8 @@ namespace App\Data\Repositories\Property;
 
 
 
+use App\Data\Models\Packages\PackagesModel; 
+
 use App\Data\Models\Property\PropertyModel;
 use App\Data\Models\Property\PropertyMetaModel;
 
@@ -23,6 +25,7 @@ class PropertyRepository extends BaseRepository
     /**
      * Declaration of Variables
      */
+    private $package_model;
     private $property_model;
     private $property_meta_model;
 
@@ -31,9 +34,11 @@ class PropertyRepository extends BaseRepository
      * @param Fund 
      */
     public function __construct(
+        PackagesModel $packageModel,
         PropertyModel $propertyModel,
         PropertyMetaModel $propertyMetaModel
     ){
+        $this->package_model = $packageModel;
         $this->property_model = $propertyModel;
         $this->property_meta_model = $propertyMetaModel;
     }
@@ -309,6 +314,14 @@ class PropertyRepository extends BaseRepository
     {
         $filters = ["this", "is", "the", "of", "for", "name", "product", "are"];
         return $filters;
+    }
+
+    public function packages($data)
+    {
+        $packages = $this->returnToArray($this->package_model->where('product_id', $data['product_id'])->get());
+
+        dump($packages);
+        # code...
     }
 
     
